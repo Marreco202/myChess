@@ -1,7 +1,10 @@
 #Rules
+tab = [] #tabuleiro
+possibleMove = [] # tabuleiro que só deve conter as bolinhas cinzas dos movimentos (orientacao pra view)
 
 def createTab(): #cria um tabuleiro 8x8 
-    tab = []
+    global tab
+    global possibleMove
     j = 0
 
     while j < 8:
@@ -12,6 +15,7 @@ def createTab(): #cria um tabuleiro 8x8
             i+=1
         j+=1
     
+    possibleMove = tab
     initTab(tab)
     return tab
 
@@ -21,7 +25,7 @@ def initTab(tab): #Posições iniciais
     #White
         #White Pawn
     for el in tab[1]:
-        el = 'WP'
+        el = 'WP2'
 
         #White backline
 
@@ -33,7 +37,7 @@ def initTab(tab): #Posições iniciais
     #Black
         #Black Pawn
     for el in tab[6]:
-        el = 'BP'
+        el = 'BP2'
 
 
         #Black backline
@@ -57,3 +61,66 @@ def createCMD(): #dicionário para futura command line
         i+=1
     return diccio
 
+def validTile(pos): #ve oq tem naquele tile e valida seu movimento
+    global tab
+    if(pos[0] < 8):
+        if(pos[1] < 8):
+            if(tab[pos[0]][pos[1]] != ''):
+                return 3 #nenhuma peça nessa posição
+            elif('B' in tab[pos[0]][pos[1]]):
+                return 2 #peça preta nesta posição
+            elif('W' in tab[pos[0]][pos[1]]):
+                return 1 #peça branca nesta posição
+    else:
+        return 0 #movimento invalido
+
+def pawnTracing(initPos): #calcula o tracing do peao
+    global tab
+    global possibleMove
+    i = 1
+    initPos = [initPos[0] + i,initPos[1] + i] # offset para os movimentos do peao, ja que ele nao deve ter a opcao de se mover para a própria initPos
+
+    while i <= 2:
+        if(validTile(initPos) == 3):
+            possibleMove[initPos[0]][initPos[1]] = 'x'  #isso tb
+        else:
+            break
+        i+=1
+
+
+def columnTracing(initPos): #tracing do movimento da torre
+    global tab
+    global possibleMove
+    #preciso fazer o tracing das 4 direções de forma independente, se não tem o risco de quando limitar 1 limitar todos
+    
+    i = 1 #step
+
+    north = [initPos[0] ,initPos[1] + i]
+    west = [initPos[0] - i,initPos[1]] 
+    east = [initPos[0] + i ,initPos[1]]
+    south = [initPos[0] ,initPos[1] - i]
+
+    #North tracing
+    while north[1] < 8:
+        possibleMove[north[0]][north[1]] = 'x'
+        north = [north[0],north[1] + i]
+
+    #South tracing
+    while south[1] > -1:
+        possibleMove[south[0]][south[1]] = 'x'
+        south = [south[0],south[1] - i]
+    
+    #East tracing
+    while east[0] < 8:
+        possibleMove[east[0]][east[1]] = 'x'
+        east = [east[0] + i][east[1]]
+    
+    #West tracing
+    while west > -1:
+        possibleMove[west[0]][west[1]] = 'x'
+        west = [west[0]-i][west[1]]
+
+    
+
+def diagonalTracing(initPos): #tracing do movimento do bispo
+    return
