@@ -1,4 +1,5 @@
 #Rules
+
 tab = [] #tabuleiro
 possibleMove = [] # tabuleiro que só deve conter as bolinhas cinzas dos movimentos (orientacao pra view)
 
@@ -74,6 +75,13 @@ def validTile(pos): #ve oq tem naquele tile e valida seu movimento
     else:
         return 0 #movimento invalido
 
+def clearTracing(): #limpa a lista de tracing para a próxima peça
+    global possibleMove
+    for sublist in possibleMove:
+        for el in sublist:
+            el = ''
+    return
+
 def pawnTracing(initPos): #calcula o tracing do peao
     global tab
     global possibleMove
@@ -123,4 +131,36 @@ def columnTracing(initPos): #tracing do movimento da torre
     
 
 def diagonalTracing(initPos): #tracing do movimento do bispo
+    global tab
+    global possibleMove
+
+    i = 1 #step
+
+    NW = [initPos[0] - i, initPos[1] + i]
+    NE = [initPos[0] + i, initPos[1] + i]
+    SW = [initPos[0] - i, initPos[1] - i]
+    SE = [initPos[0] + i, initPos[1] - i]
+
+    #NE tracing
+    while NE[0] < 8 and NE[1] < 8:
+        possibleMove[NE[0]][NE[1]] = 'x'
+        NE = [NE[0] +i, NE[1] +i]
+
+    #SW tracing
+    while SW[0] > -1 and SW[1] > -1:
+        possibleMove[SW[0]][SW[1]] = 'x'
+        SW = [SW[0] -i, SW[1] -i]
+
+    #NW tracing
+    while NW[0] > -1 and NW[1] < 8:
+        possibleMove[NW[0]][NW[1]] = 'x'
+        NW = [NW[0] -i, NW[1] +i]
+    #SE tracing
+    while SE[0] < 8 and SE[1] > -1 :
+        possibleMove[SE[0]][SE[1]] = 'x'
+        SE = [SE[0] +i, SE[1] -i]
+    return
+
+def kingTracing(initPos):
+
     return
